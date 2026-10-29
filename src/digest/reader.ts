@@ -25,6 +25,7 @@ export function parseRun(line: string): Run | null {
 
 export function digest(night: string, text: string): Night {
   const rows = new Map<string, DigestRow>();
+  const counts: Record<RunStatus, number> = { ok: 0, retry: 0, fail: 0 };
   let badLines = 0;
   for (const line of text.split(/\r?\n/)) {
     if (line.trim() === '') continue;
@@ -33,6 +34,7 @@ export function digest(night: string, text: string): Night {
       badLines++;
       continue;
     }
+    counts[run.status]++;
     const row = rows.get(run.job);
     if (!row) {
       rows.set(run.job, {
@@ -54,7 +56,7 @@ export function digest(night: string, text: string): Night {
     row.owner = run.owner ?? row.owner;
     row.lastError = run.error ?? row.lastError;
   }
-  return { night, rows: [...rows.values()].sort((a, b) => a.job.localeCompare(b.job)), badLines };
+  return { night, rows: [...rows.values()].sort((a, b) => a.job.localeCompare(b.job)), counts, badLines };
 }
 
 export const readNight: ReadNight = (runsDir, night) => {
