@@ -6,7 +6,7 @@ export function DigestPage({ night }: { night: Night }) {
   return (
     <>
       <h1>digest · {night.night}</h1>
-      {night.badLines > 0 && <p class="mute">{night.badLines} lines could not be read</p>}
+      {night.badLines > 0 && <p class="mute">{night.badLines} {night.badLines === 1 ? 'line' : 'lines'} could not be read</p>}
       {night.rows.length === 0 ? (
         <p class="mute">nothing ran</p>
       ) : (
